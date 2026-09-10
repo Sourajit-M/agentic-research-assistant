@@ -3,6 +3,7 @@ from groq import Groq
 import config
 from state import GraphState
 from schemas import PlannerOutput
+from tools import web_search
 
 client = Groq(api_key=config.GROQ_API_KEY)
 
@@ -38,3 +39,10 @@ def planner_node(state: GraphState) -> dict:
     parsed = PlannerOutput.model_validate(json.loads(raw))
 
     return {"sub_questions": parsed.sub_questions}
+
+def researcher_node(state: GraphState) -> dict:
+    search_results = {}
+    for sub_question in state["sub_questions"]:
+        search_results[sub_question] = web_search(sub_question)
+
+    return {"search_results": search_results}
