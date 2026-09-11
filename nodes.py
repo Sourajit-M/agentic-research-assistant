@@ -4,6 +4,7 @@ import config
 from state import GraphState
 from schemas import PlannerOutput
 from tools import web_search
+from rag_store import index_search_results
 
 client = Groq(api_key=config.GROQ_API_KEY)
 
@@ -46,3 +47,8 @@ def researcher_node(state: GraphState) -> dict:
         search_results[sub_question] = web_search(sub_question)
 
     return {"search_results": search_results}
+
+def indexer_node(state: GraphState) -> dict:
+    count = index_search_results(state["search_results"])
+    print(f"Indexed {count} chunks into Qdrant")
+    return {}

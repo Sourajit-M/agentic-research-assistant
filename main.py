@@ -1,4 +1,5 @@
 from graph import build_graph
+from rag_store import retrieve
 
 graph = build_graph()
 
@@ -9,7 +10,6 @@ result = graph.invoke({
     "response": "",
 })
 
-for sub_question, results in result["search_results"].items():
-    print(f"\n=== {sub_question} ===")
-    for r in results:
-        print(f"- {r['title']} ({r['url']})")
+print("\n--- Test retrieval ---")
+for hit in retrieve("cost of running RAG systems", top_k=3):
+    print(f"[{hit['score']:.3f}] {hit['title']} — {hit['text'][:80]}...")
